@@ -13,11 +13,16 @@ const requiredLogin = require('./src/middleware/middleware')
 //user
 route.post('/register', userController.store)
 route.put('/register/:id', requiredLogin, userController.updated)
+route.get('/register', userController.index)
 
 
 route.post('/login', loginController.login)
 
 //post
-route.get('/post', postController.store)
+route.get('/post', postController.index)
+route.post('/post', postController.store)
+route.get('/post/:id', postController.show)
+route.delete('/post/:id', postController.delete)
+route.put('/post/:id', postController.updated)
 
 module.exports = route;

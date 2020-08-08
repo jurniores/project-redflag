@@ -1,5 +1,5 @@
 const User = require('../../models/UserModel/UserModel');
-
+const Post = require('../../models/PostsModel/PostsModel');
 
 
 module.exports = {
@@ -29,10 +29,10 @@ module.exports = {
             const { id } = req.params
             const user = await User.findByPk(id)
             if(!user) {
-                res.status(400).json({
+                return res.status(400).json({
                     Errors: ['Usuário não existe!']
                 })
-                return
+                
             }
            const { password } = req.body 
            const newUser =  await user.update(req.body)
@@ -44,6 +44,24 @@ module.exports = {
                 Errors: e.errors.map(err=>err.message)
             })
         }
+    },
+
+    async index(req, res) {
+        try{
+            const user = await User.findAll({
+                attributes: ['id', 'email', 'name'],
+                order: [['id','DESC']],
+                include:{
+                    model: Post,
+                    order:[['id','DESC']],
+                    attributes:['id','title','text', 'author','user_id' ]
+                }
+            })
+            res.json(user)
+        } catch (e) {
+            res.json(e)
+        }
+        
     }
 
 }
