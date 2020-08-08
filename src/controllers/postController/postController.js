@@ -1,13 +1,18 @@
 const Post = require('../../models/PostsModel/PostsModel');
+const View = require('../../models/ViewsModel/ViewsModel');
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op
 
 
 module.exports = {
   async  store(req, res) {
         try{
-            const post = await Post.create(req.body)
+             const post = await Post.create(req.body)
             res.status(200).json({
                 success: ['Texto Criado com sucesso!']
             })
+            await View.create({ view: 1, id_post: post.id})
+            console.log(post.id)
         }
         catch(e) {
             res.status(400).json(e)
@@ -17,7 +22,11 @@ module.exports = {
     async index(req, res) {
         try {
             const posts= await Post.findAll({
-                attributes:['id','title', 'slug', 'author', 'desc', 'tipo', 'text', 'user_id']
+                attributes:['id','title', 'slug', 'author', 'desc', 'tipo', 'text', 'user_id'],
+                order:[['id','desc']],
+                include: {
+                    model: View,
+                }
             })
             if(!posts){
                 return res.status(400).json({
@@ -78,6 +87,38 @@ module.exports = {
             res.status(400).json(e)
         }
     },
+
+    async Search (req, res) {
+        const { title } = req.body
+        
+        
+        try {
+            
+            const posts= await Post.findAll({
+                
+                where: {title: {
+                    [Op.like]: `%${title}%`
+                  } },
+                  
+                attributes:['id','title', 'slug', 'author', 'desc', 'tipo', 'text', 'user_id'],
+                order:[['id','desc']],
+                include: {
+                    model: View,
+                } 
+                
+            })
+            if(!posts || posts.length===0){
+                return res.status(400).json({
+                    Error: ['Não existe postagem!']
+                })
+            }
+            
+            res.status(200).json(posts)
+        } catch (e) {
+            res.status(400).json(e)
+        }
+
+    }
     
     
 

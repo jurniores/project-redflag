@@ -34,6 +34,7 @@ module.exports = {
                 })
                 
             }
+            if(user !== req.UserId) return
            const { password } = req.body 
            const newUser =  await user.update(req.body)
            const {email, name} = newUser
@@ -58,6 +59,20 @@ module.exports = {
                 }
             })
             res.json(user)
+        } catch (e) {
+            res.json(e)
+        }
+        
+    },
+    async delete(req, res) {
+
+        try{
+            const { id } = req.params;
+            const user = await User.findByPk(id)
+            user.destroy()
+            res.json({
+                success: ['Usuário deletado com sucesso!']
+            })
         } catch (e) {
             res.json(e)
         }

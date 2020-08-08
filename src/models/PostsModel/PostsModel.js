@@ -35,7 +35,8 @@ module.exports = class Posts extends Model {
         return this;
     }
     static associate(models){
-        this.belongsTo(models, { foreignKey: 'user_id' })
+        this.belongsTo(models.User, { foreignKey: 'user_id' })
+        this.hasOne(models.Views, { foreignKey: 'id_post'})
 
     }
 }
