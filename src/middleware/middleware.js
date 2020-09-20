@@ -28,7 +28,7 @@ module.exports = async function required(req, res, next) {
 
     if(!user) {
         return res.json({
-            Errors:["Usuário não existe!"]
+            Errors:["Usuário não existe, faça login!"]
         })
     }
     req.userId = id

@@ -11,6 +11,10 @@ module.exports = class View extends Model {
             id_post: {
                 type: Sequelize.INTEGER,
                 defaultValue:''
+            },
+            date: {
+                type: Sequelize.DATE,
+                defaultValue: new Date
             }
         },
             {sequelize})
